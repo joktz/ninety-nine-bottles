@@ -9,7 +9,9 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-
+  <%# Flash messages, need to move/style later one %>
+   <p class="notice"><%= notice %></p>
+    <p class="alert"><%= alert %></p>
   <body>
     <%= yield %>
   </body>
