@@ -27,14 +27,3 @@ class GamesController < ApplicationController
     params.require(:game).permit(:title, :rounds, :sessions, :round_mode, :inf_mode)
   end
 end
-
-
-t.string "title"
-t.integer "rounds"
-t.bigint "user_id", null: false
-t.integer "sessions"
-t.string "round_mode"
-t.string "inf_mode"
-t.datetime "created_at", null: false
-t.datetime "updated_at", null: false
-t.index ["user_id"], name: "index_games_on_user_id"
