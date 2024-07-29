@@ -78,3 +78,4 @@ end
 # Manually added gems
 
 gem "devise"
+gem "cloudinary"
