@@ -9,7 +9,10 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-
+  <%# Render Navbar  %>
+  <%= render "shared/navbar" %>
+  <%# Flash messages, need to move/style later one %>
+  <%= render "shared/flashes" %>
   <body>
     <%= yield %>
   </body>

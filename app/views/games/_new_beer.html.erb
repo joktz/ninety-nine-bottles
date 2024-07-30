@@ -1,0 +1,13 @@
+<div class="container">
+  <%= simple_form_for [@game, @beer], html: { multipart: true } do |f| %>
+    <%= f.input :name %>
+    <%= f.input :style %>
+    <%= f.input :brewery %>
+    <%= f.input :origin %>
+    <%= f.input :photo,
+                as: :file,
+                required: false,
+                input_html: { accept: "image/*" } %>
+    <%= f.submit "Add beer" %>
+  <% end %>
+</div>
