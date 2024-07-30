@@ -10,17 +10,18 @@ export default class extends Controller {
 
   toggle(event) {
     const targetForm = event.currentTarget.dataset.target;
-    console.log("Toggling ${targetForm}...");
-    this.hideAllForms();
-    this.showForm(targetForm);
-  }
-
-  hideAllForms() {
-    this.playerFormTarget.classList.add('d-none');
-    this.beerFormTarget.classList.add('d-none');
-  }
-
-  showForm(targetForm) {
+    console.log(`Hiding rendered forms...`);
+    this.hideAllExcept(targetForm);
+    console.log(`Toggling ${targetForm}...`);
     this[`${targetForm}Target`].classList.toggle('d-none');
+  }
+
+  hideAllExcept(targetForm) {
+    if (targetForm !== 'playerForm') {
+      this.playerFormTarget.classList.add('d-none');
+    }
+    if (targetForm !== 'beerForm') {
+      this.beerFormTarget.classList.add('d-none');
+    }
   }
 }
