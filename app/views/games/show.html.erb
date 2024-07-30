@@ -1,7 +1,15 @@
-<div class="container">
+<div class="container" data-controller="toggler">
   <h1> <%= @game.title %> </h1>
-  <button> Add a player </button>
+  <button data-action="click->toggler#toggle"> Add a player </button>
   <button> Add a beer </button>
   <button> Choose difficulty </button>
   <button> Start game </button>
+  <div data-toggler-target="playerForm" class="d-none";>
+    <%= render 'new_player', player: @player %>
+  </div>
+  <div class="container">
+    <% @players.each do |player| %>
+      <%= player.name %>
+    <% end %>
+  </div>
 </div>

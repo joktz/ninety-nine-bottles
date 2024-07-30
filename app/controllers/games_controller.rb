@@ -5,6 +5,8 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
+    @player = Player.new
+    @players = @game.players
   rescue ActiveRecord::RecordNotFound
     flash[:alert] = 'Game not found'
     redirect_to games_path
