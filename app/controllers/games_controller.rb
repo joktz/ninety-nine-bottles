@@ -12,7 +12,8 @@ class GamesController < ApplicationController
     @markers = @beers.geocoded.map do |beer|
       {
         lat: beer.latitude,
-        lng: beer.longitude
+        lng: beer.longitude,
+        info_window: render_to_string(partial: "popup", locals: { beer: beer })
       }
     end
   rescue ActiveRecord::RecordNotFound
