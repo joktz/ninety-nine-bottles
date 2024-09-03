@@ -13,10 +13,11 @@ export default class extends Controller {
     this.map = new mapboxgl.Map({
       container: 'map', // container ID
       style: 'mapbox://styles/mapbox/streets-v12', // style URL
-      center: [-74.5, 40], // starting position [lng, lat]
       zoom: 9, // starting zoom
+      projection: 'mercator'
     });
     this.addMarkerstoMap();
+    this.fitMapToMarkers();
   }
 
   addMarkerstoMap() {
@@ -25,6 +26,13 @@ export default class extends Controller {
         .setLngLat([marker.lng, marker.lat])
         .addTo(this.map);
     });
+  }
 
+  fitMapToMarkers() {
+    const bounds = new mapboxgl.LngLatBounds();
+    this.markersValue.forEach((marker) => {
+      bounds.extend([marker.lng, marker.lat]);
+    });
+    this.map.fitBounds(bounds, { padding: 40, maxZoom: 15, duration: 10 });
   }
 }
