@@ -1,0 +1,9 @@
+<div class="beer-card">
+  <% if beer.photo.attached? %>
+    <%= image_tag beer.photo %>
+  <% end %>
+  <%= beer.name %>
+  <%= beer.style %>
+  <%= beer.brewery %>
+  <%= beer.origin %>
+</div>

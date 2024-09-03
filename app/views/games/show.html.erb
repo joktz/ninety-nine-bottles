@@ -17,15 +17,7 @@
   </div>
   <div class="container">
     <% @beers.each do |beer| %>
-      <div class=card>
-        <% if beer.photo.attached? %>
-          <%= image_tag beer.photo %>
-        <% end %>
-        <%= beer.name %>
-        <%= beer.style %>
-        <%= beer.brewery %>
-        <%= beer.origin %>
-      </div>
+      <%= render partial: "beer_card", locals: { beer: beer } %>
     <% end %>
   </div>
 </div>
