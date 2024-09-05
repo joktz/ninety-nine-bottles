@@ -9,6 +9,13 @@ class GamesController < ApplicationController
     @players = @game.players
     @beer = Beer.new
     @beers = @game.beers
+    @markers = @beers.geocoded.map do |beer|
+      {
+        lat: beer.latitude,
+        lng: beer.longitude,
+        info_window: render_to_string(partial: "popup", locals: { beer: beer })
+      }
+    end
   rescue ActiveRecord::RecordNotFound
     flash[:alert] = 'Game not found'
     redirect_to games_path
