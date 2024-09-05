@@ -1,0 +1,12 @@
+.editor-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  padding-right: 4px;
+}
+
+.editor-close:hover {
+  font-weight: bold;
+  color: white;
+}
