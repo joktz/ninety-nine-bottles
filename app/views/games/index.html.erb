@@ -2,7 +2,8 @@
 <h1> My Games </h1>
 <% @games.each do |game| %>
   <div class="card">
-    <%= link_to game.title, game_path(game.id) %>
+    <%= link_to game.title, game_path(game) %>
+    <%= button_to "Delete", game_path(game), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
   </div>
 <% end %>
 </div>
