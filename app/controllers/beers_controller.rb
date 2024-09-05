@@ -1,4 +1,5 @@
 class BeersController < ApplicationController
+
   def new
     @beer = Beer.new
   end
@@ -11,6 +12,29 @@ class BeersController < ApplicationController
     else
       render "games/show", status: :unprocessable_entity, notice: "Error when creating beer"
     end
+  end
+
+  def show
+  end
+
+  def edit
+    @beer = Beer.find(params[:id])
+  end
+
+  def update
+    @beer = Beer.find(params[:id])
+    @beer.update(beer_params)
+    if @beer.save
+      redirect_to game_path(@beer.game), notice: "Beer was successfully updated."
+    else
+      render :edit, status: :unprocessable_entity, notice: "Error when updating beer"
+    end
+  end
+
+  def destroy
+    @beer = Beer.find(params[:id])
+    @beer.destroy
+    redirect_to game_path(@beer.game), notice: "Beer was successfully deleted."
   end
 
   private

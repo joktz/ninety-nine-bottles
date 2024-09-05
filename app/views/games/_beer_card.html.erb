@@ -8,4 +8,5 @@
   <%= beer.origin %>
   <%= beer.latitude %>
   <%= beer.longitude %>
+  <%= link_to "Delete", beer_path(beer), data: {turbo_method: :delete, turbo_confirm: "Are you sure?" } %>
 </div>
