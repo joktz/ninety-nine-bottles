@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="toggler"
 export default class extends Controller {
-  static targets = [ "playerForm", "beerForm" ]
+  static targets = [ "playerForm", "beerForm", "editBeerForm" ]
 
   connect() {
     console.log("Connected to toggler controller");

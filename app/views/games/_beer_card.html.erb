@@ -1,4 +1,4 @@
-<div class="beer-card" data-controller="editor">
+<div class="beer-card">
   <% if beer.photo.attached? %>
     <%= image_tag beer.photo %>
   <% end %>
@@ -7,10 +7,8 @@
   <%= beer.brewery %>
   <%= beer.origin %>
   <%= link_to "Delete", beer_path(beer), data: {turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
-  <div class="edit-beer-form">
-    <button data-action="click->editor#reveal" data-target="editBeerForm"> Edit </button>
-  </div>
-  <div class="d-none" data-editor-target="editBeerForm">
+  <button data-action="click->toggler#toggle" data-target="editBeerForm"> Edit </button>
+  <div class="edit-beer-form d-none" data-toggler-target="editBeerForm">
     <%= render partial: "edit_beer", locals: { beer: beer } %>
   </div>
 </div>

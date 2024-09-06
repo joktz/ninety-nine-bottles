@@ -1,5 +1,5 @@
-<div class="edit-form" data-controller="editor">
-  <h3 class="editor-close" data-action="click->editor#hide"> x </h3>
+<div class="edit-form">
+  <h3 class="editor-close" data-action="click->toggler#toggle" data-target="editBeerForm"> x </h3>
   <%= simple_form_for [beer], html: { multipart: true } do |f| %>
     <%= f.input :name %>
     <%= f.input :style %>
