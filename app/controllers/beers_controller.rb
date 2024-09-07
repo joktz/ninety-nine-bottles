@@ -27,7 +27,7 @@ class BeersController < ApplicationController
     if @beer.save
       redirect_to game_path(@beer.game), notice: "Beer was successfully updated."
     else
-      render :edit, status: :unprocessable_entity, notice: "Error when updating beer"
+      redirect_to game_path(@beer.game), notice: "Error when updating beer"
     end
   end
 
