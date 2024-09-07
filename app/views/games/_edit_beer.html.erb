@@ -1,5 +1,6 @@
 <div class="edit-form">
-  <h3 class="editor-close" data-action="click->toggler#toggle" data-target="editBeerForm"> x </h3>
+  <h3> Edit <%= beer.name %></h3>
+  <h3 class="editor-close" data-action="click->toggler#toggle" data-target="editBeerForm" data-beer-id="<%= beer.id %>"> x </h3>
   <%= simple_form_for [beer], html: { multipart: true } do |f| %>
     <%= f.input :name %>
     <%= f.input :style %>
@@ -12,6 +13,6 @@
                 as: :file,
                 required: false,
                 input_html: { accept: "image/*" } %>
-    <%= f.submit "Add beer" %>
+    <%= f.submit "Save Changes" %>
   <% end %>
 </div>
