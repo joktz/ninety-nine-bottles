@@ -1,0 +1,19 @@
+<div class="edit-form">
+  <h3> Edit <%= beer.name %></h3>
+  <h3 class="editor-close" data-action="click->toggler#toggle" data-target="editBeerForm" data-beer-id="<%= beer.id %>"> x </h3>
+  <%= simple_form_for [beer], html: { multipart: true, novalidate: false } do |f| %>
+    <%= f.input :name, required: true %>
+    <%= f.input :style, required: true %>
+    <%= f.input :brewery, required: true %>
+    <%= f.input :origin,
+                input_html: {data: {address_autocomplete_target: "origin"}, class: "d-none"},
+                wrapper_html: {data: {controller: "address-autocomplete", address_autocomplete_api_key_value: ENV['MAPBOX_API_KEY']}},
+                required: true
+                %>
+    <%= f.input :photo,
+                as: :file,
+                required: false,
+                input_html: { accept: "image/*" } %>
+    <%= f.submit "Save Changes" %>
+  <% end %>
+</div>

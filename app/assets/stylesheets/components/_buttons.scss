@@ -1,0 +1,20 @@
+.editor-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  padding-right: 4px;
+}
+
+.player-delete {
+  text-decoration: none;
+  color: black;
+  border: none;
+  background-color: transparent;
+}
+
+
+.editor-close, .player-delete:hover {
+  font-weight: bold;
+  color: white;
+}
