@@ -6,7 +6,15 @@
   padding-right: 4px;
 }
 
-.editor-close:hover {
+.player-delete {
+  text-decoration: none;
+  color: black;
+  border: none;
+  background-color: transparent;
+}
+
+
+.editor-close, .player-delete:hover {
   font-weight: bold;
   color: white;
 }

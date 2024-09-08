@@ -1,6 +1,6 @@
 <div class="game-page" data-controller="toggler click-edit">
   <div data-action="click->click-edit#click" data-model="game" data-field="title">
-    <h1 data-click-edit-target="gameTitle" data-url="<%= game_path(@game) %>"> <%= @game.title %> </h1>
+    <h1  data-click-edit-target="gameTitle" data-url="<%= game_path(@game) %>"> <%= @game.title %> </h1>
     <input type="text" data-click-edit-target="gameNewTitle" value="<% @game.title %>" class="d-none">
   </div>
   <button data-action="click->toggler#toggle" data-target="playerForm"> Add a player </button>
@@ -15,9 +15,12 @@
   </div>
   <div class="container">
     <% @players.each do |player| %>
-      <div class="player-card" data-action="click->click-edit#click" data-field="name" data-model="player">
-        <span data-click-edit-target="playerName" data-url="<%= player_path(player)%>"> <%= player.name %> </span>
-        <input type="text" data-click-edit-target="playerNewName" value="<% player.name %>" class="d-none">
+      <div class="player-card"  >
+        <div data-action="click->click-edit#click" data-field="name" data-model="player">
+          <span data-click-edit-target="playerName" data-url="<%= player_path(player)%>"> <%= player.name %> </span>
+          <input type="text" data-click-edit-target="playerNewName" value="<% player.name %>" class="d-none">
+        </div>
+        <%= button_to "X", player_path(player), method: :delete, data: { turbo_confirm: "Are you sure?"}, class: "player-delete" %>
       </div>
     <% end %>
   </div>

@@ -5,3 +5,13 @@
   display: flex;
   justify-content: center;
 }
+
+.player-card {
+  box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  display: flex;
+  margin: 4px;
+  padding: 4px;
+  justify-content: space-between;
+  background-color: lightgray;
+}

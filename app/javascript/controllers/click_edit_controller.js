@@ -32,6 +32,10 @@ export default class extends Controller {
     newContent.focus();
     this.moveCursorToEnd(oldContent, newContent);
     // Closes and saves new content on outside clicks (blur) or enter key
+    newContent.addEventListener("blur", () => {
+      console.log("Blur event for", newContent);
+      this.update(oldContent, newContent, model, field);
+    });
     newContent.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         console.log("Enter pressed for", newContent);
@@ -56,6 +60,11 @@ export default class extends Controller {
     // Saves new content
     const newValue = newContent.value.trim();
     console.log("New value:", newValue);
+    // If no change, do nothing. Prevents unnecessary server calls
+    if (newValue === oldContent.textContent.trim()) {
+      this.closeEditing(oldContent, newContent);
+      return;
+    };
     // Sends new value to DB
     return this.save(model, field, newValue, oldContent)
       .then(response => {
@@ -63,8 +72,7 @@ export default class extends Controller {
         if (response.status === "Success") {
           console.log(response[model][field])
           oldContent.textContent = response[model][field];
-          newContent.classList.add("d-none");
-          oldContent.classList.remove("d-none");
+          this.closeEditing(oldContent, newContent);
           console.log(`Updated ${field} to ${response[model][field]}`);
         } else {
           console.error("Error:", response);
@@ -99,5 +107,11 @@ export default class extends Controller {
       return response.json();
     })
     .catch(error => console.error("Error:", error));
+  }
+
+  closeEditing(oldContent, newContent) {
+    console.log("Close editing called");
+    newContent.classList.add("d-none");
+    oldContent.classList.remove("d-none");
   }
 }

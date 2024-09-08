@@ -4,6 +4,10 @@ class PlayersController < ApplicationController
     @player = Player.new
   end
 
+  def show
+    @player = Player.find(params[:id])
+  end
+
   def create
     @player = Player.new(player_params)
     @player.game = Game.find(params[:game_id])
@@ -32,6 +36,12 @@ class PlayersController < ApplicationController
         format.json {render json: { status: "error", errors: @player.errors.full_messages }, status: :unprocessable_entity }
       end
     end
+  end
+
+  def destroy
+    @player = Player.find(params[:id])
+    @player.destroy
+    redirect_to game_path(@player.game), notice: "Player was successfully deleted."
   end
 
   private
