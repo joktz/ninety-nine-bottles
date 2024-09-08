@@ -41,10 +41,17 @@ class GamesController < ApplicationController
 
   def update
     @game = Game.find(params[:id])
+    # Conditional to allow for AJAX requests
     if @game.update(game_params)
-      redirect_to game_path(@game)
+      respond_to do |format|
+        format.html { redirect_to game_path(@game) }
+        format.json { render json: { status: "Success", game: @game }, status: :ok }
+      end
     else
-      render :edit, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { redirect_to game_path(@game), status: :unprocessable_entity }
+        format.json { render json: { status: "error", errors: @game.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -53,6 +60,7 @@ class GamesController < ApplicationController
     @game.destroy
     redirect_to games_path, notice: "Game deleted"
   end
+
   private
 
   def game_params

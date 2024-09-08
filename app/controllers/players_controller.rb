@@ -14,6 +14,26 @@ class PlayersController < ApplicationController
     end
   end
 
+  def edit
+    @player = Player.find(params[:id])
+  end
+
+  def update
+    @player = Player.find(params[:id])
+    # Conditional to allow for AJAX requests
+    if @player.update(player_params)
+      respond_to do |format|
+        format.html { redirect_to game_path(@player.game) }
+        format.json { render json: { status: "Success", player: @player }, status: :ok }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to game_path(@player.game), status: :unprocessable_entity }
+        format.json {render json: { status: "error", errors: @player.errors.full_messages }, status: :unprocessable_entity }
+      end
+    end
+  end
+
   private
 
   def player_params
