@@ -1,11 +1,8 @@
 class PlayersController < ApplicationController
+  before_action :set_player, only: %i[show edit update destroy]
 
   def new
     @player = Player.new
-  end
-
-  def show
-    @player = Player.find(params[:id])
   end
 
   def create
@@ -18,12 +15,13 @@ class PlayersController < ApplicationController
     end
   end
 
+  def show
+  end
+
   def edit
-    @player = Player.find(params[:id])
   end
 
   def update
-    @player = Player.find(params[:id])
     # Conditional to allow for AJAX requests
     if @player.update(player_params)
       respond_to do |format|
@@ -39,12 +37,15 @@ class PlayersController < ApplicationController
   end
 
   def destroy
-    @player = Player.find(params[:id])
     @player.destroy
     redirect_to game_path(@player.game), notice: "Player was successfully deleted."
   end
 
   private
+
+  def set_player
+    @player = Player.find(params[:id])
+  end
 
   def player_params
     params.require(:player).permit(:name, :score)
