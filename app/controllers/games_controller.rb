@@ -1,17 +1,19 @@
 class GamesController < ApplicationController
-  before_action :set_game, only: %i[show edit update destroy]
+  before_action :set_game, only: [:show, :edit, :update, :destroy]
 
   def index
-    @games = current_user.games
+    @games = policy_scope(Game).all
   end
 
   def new
     @game = Game.new
+    authorize @game
   end
 
   def create
     @game = Game.new(game_params)
     @game.user = current_user
+    authorize @game
     if @game.save
       redirect_to game_path(@game)
     else
@@ -63,9 +65,10 @@ class GamesController < ApplicationController
 
   def set_game
     @game = Game.find(params[:id])
+    authorize @game
   end
 
   def game_params
-    params.require(:game).permit(:title, :rounds, :sessions, :round_mode, :inf_mode)
+    params.require(:game).permit(:title)
   end
 end

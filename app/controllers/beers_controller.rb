@@ -3,11 +3,13 @@ class BeersController < ApplicationController
 
   def new
     @beer = Beer.new
+    authorize @beer
   end
 
   def create
     @beer = Beer.new(beer_params)
     @beer.game = Game.find(params[:game_id])
+    authorize @beer
     if @beer.save
       redirect_to game_path(@beer.game), notice: "Beer was successfully added."
     else
@@ -39,6 +41,7 @@ class BeersController < ApplicationController
 
   def set_beer
     @beer = Beer.find(params[:id])
+    authorize @beer
   end
 
   def beer_params

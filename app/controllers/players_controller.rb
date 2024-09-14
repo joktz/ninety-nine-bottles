@@ -3,11 +3,13 @@ class PlayersController < ApplicationController
 
   def new
     @player = Player.new
+    authorize @player
   end
 
   def create
     @player = Player.new(player_params)
     @player.game = Game.find(params[:game_id])
+    authorize @player
     if @player.save
       redirect_to game_path(@player.game), notice: "Player was successfully created."
     else
@@ -45,9 +47,10 @@ class PlayersController < ApplicationController
 
   def set_player
     @player = Player.find(params[:id])
+    authorize @player
   end
 
   def player_params
-    params.require(:player).permit(:name, :score)
+    params.require(:player).permit(:name)
   end
 end
