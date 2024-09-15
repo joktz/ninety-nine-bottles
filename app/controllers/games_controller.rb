@@ -7,6 +7,7 @@ class GamesController < ApplicationController
 
   def new
     @game = Game.new
+    @game.user = current_user
     authorize @game
   end
 

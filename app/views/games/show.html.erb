@@ -5,8 +5,9 @@
   </div>
   <button data-action="click->toggler#toggle" data-target="playerForm"> Add a player </button>
   <button data-action="click->toggler#toggle" data-target="beerForm"> Add a beer </button>
-  <button> Choose difficulty </button>
-  <button> Start game </button>
+  <% if @players.length >= 2%>
+    <button> Start game </button>
+  <% end %>
   <div data-toggler-target="playerForm" class="d-none">
     <%= render 'new_player', player: @player %>
   </div>
