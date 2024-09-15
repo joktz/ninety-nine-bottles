@@ -1,15 +1,19 @@
 class GamesController < ApplicationController
+  before_action :set_game, only: [:show, :edit, :update, :destroy]
+
   def index
-    @games = current_user.games
+    @games = policy_scope(Game).all
   end
 
   def new
     @game = Game.new
+    authorize @game
   end
 
   def create
     @game = Game.new(game_params)
     @game.user = current_user
+    authorize @game
     if @game.save
       redirect_to game_path(@game)
     else
@@ -18,7 +22,6 @@ class GamesController < ApplicationController
   end
 
   def show
-    @game = Game.find(params[:id])
     @player = Player.new
     @players = @game.players
     @beer = Beer.new
@@ -36,11 +39,9 @@ class GamesController < ApplicationController
   end
 
   def edit
-    @game = Game.find(params[:id])
   end
 
   def update
-    @game = Game.find(params[:id])
     # Conditional to allow for AJAX requests
     if @game.update(game_params)
       respond_to do |format|
@@ -56,14 +57,18 @@ class GamesController < ApplicationController
   end
 
   def destroy
-    @game = Game.find(params[:id])
     @game.destroy
     redirect_to games_path, notice: "Game deleted"
   end
 
   private
 
+  def set_game
+    @game = Game.find(params[:id])
+    authorize @game
+  end
+
   def game_params
-    params.require(:game).permit(:title, :rounds, :sessions, :round_mode, :inf_mode)
+    params.require(:game).permit(:title)
   end
 end

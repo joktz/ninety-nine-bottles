@@ -78,5 +78,6 @@ end
 # Manually added gems
 
 gem "devise"
+gem "pundit"
 gem "cloudinary"
 gem "geocoder"
