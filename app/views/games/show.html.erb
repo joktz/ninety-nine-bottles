@@ -5,8 +5,8 @@
   </div>
   <button data-action="click->toggler#toggle" data-target="playerForm"> Add a player </button>
   <button data-action="click->toggler#toggle" data-target="beerForm"> Add a beer </button>
-  <% if @players.length >= 2%>
-    <button> Start game </button>
+  <% if @players.count >= 2 %>
+    <%= button_to "Start game", start_game_path(@game), method: :patch, class: "btn btn-primary" %>
   <% end %>
   <div data-toggler-target="playerForm" class="d-none">
     <%= render 'new_player', player: @player %>

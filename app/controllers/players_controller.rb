@@ -13,7 +13,7 @@ class PlayersController < ApplicationController
     if @player.save
       redirect_to game_path(@player.game), notice: "Player was successfully created."
     else
-      render "games/show", status: :unprocessable_entity, notice: "Error when creating player"
+      redirect_to game_path(@player.game), alert: "Player could not be created."
     end
   end
 

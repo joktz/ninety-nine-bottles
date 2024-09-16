@@ -1,0 +1,11 @@
+<div>
+  <h1> Game started! </h1>
+  <% @game.players.each do |player| %>
+    <div class="player-card">
+      <%= player.name %>
+      <%= player.score %>
+    </div>
+  <% end %>
+  <%= @game.rounds.count %>
+  <%= button_to "Cancel game", cancel_game_path(@game), method: :patch, class: "btn btn-danger" %>
+</div>

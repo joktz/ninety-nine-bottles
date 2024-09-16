@@ -1,5 +1,5 @@
 class GamesController < ApplicationController
-  before_action :set_game, only: [:show, :edit, :update, :destroy]
+  before_action :set_game, only: [:show, :edit, :update, :destroy, :start, :cancel, :ongoing]
 
   def index
     @games = policy_scope(Game).all
@@ -16,6 +16,7 @@ class GamesController < ApplicationController
     @game.user = current_user
     authorize @game
     if @game.save
+      Player.create(game: @game, name: current_user.first_name)
       redirect_to game_path(@game)
     else
       render :new, status: :unprocessable_entity
@@ -62,6 +63,34 @@ class GamesController < ApplicationController
     redirect_to games_path, notice: "Game deleted"
   end
 
+  def start
+    if @game.players.count > 1 && @game.beers.count > 1 && @game.may_start?
+      @game.start!
+      set_rounds
+      # Sets each player's score to 0
+      @game.players.each do |player|
+        player.update(score: 0)
+      end
+      redirect_to ongoing_game_path(@game), notice: "Game started"
+    else
+      redirect_to game_path(@game), alert: "You need at least 2 players and 2 beers to start the game!"
+    end
+  end
+
+  def cancel
+    if @game.ongoing?
+      @game.cancel!
+      @game.rounds.destroy_all
+      @game.players.each do |player|
+        player.score = nil
+      end
+      redirect_to game_path(@game), notice: "Game cancelled"
+    end
+  end
+
+  def ongoing
+  end
+
   private
 
   def set_game
@@ -71,5 +100,19 @@ class GamesController < ApplicationController
 
   def game_params
     params.require(:game).permit(:title)
+  end
+
+  # Sets the number of rounds dynamically, aiming for 3 beers per round with a min. of 2 beers
+  def set_rounds
+    count = @game.beers.count
+    # Makes rounds with either 3 or 4 beers each
+    if count % 3 == 0 || count % 3 == 1
+      number_of_rounds = count / 3
+    else
+      number_of_rounds = (count / 3) + 1
+    end
+    number_of_rounds.times do |i|
+      Round.create(game: @game, round_number: i + 1)
+    end
   end
 end
