@@ -66,7 +66,6 @@ class GamesController < ApplicationController
   def start
     if @game.players.count > 1 && @game.beers.count > 1 && @game.may_start?
       @game.start!
-      set_rounds
       # Sets each player's score to 0
       @game.players.each do |player|
         player.update(score: 0)
@@ -80,9 +79,8 @@ class GamesController < ApplicationController
   def cancel
     if @game.ongoing?
       @game.cancel!
-      @game.rounds.destroy_all
       @game.players.each do |player|
-        player.score = nil
+        player.update(score: nil)
       end
       redirect_to game_path(@game), notice: "Game cancelled"
     end
@@ -99,20 +97,6 @@ class GamesController < ApplicationController
   end
 
   def game_params
-    params.require(:game).permit(:title)
-  end
-
-  # Sets the number of rounds dynamically, aiming for 3 beers per round with a min. of 2 beers
-  def set_rounds
-    count = @game.beers.count
-    # Makes rounds with either 3 or 4 beers each
-    if count % 3 == 0 || count % 3 == 1
-      number_of_rounds = count / 3
-    else
-      number_of_rounds = (count / 3) + 1
-    end
-    number_of_rounds.times do |i|
-      Round.create(game: @game, round_number: i + 1)
-    end
+    params.require(:game).permit(:title, :rounds)
   end
 end

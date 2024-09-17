@@ -2,7 +2,7 @@ class Player < ApplicationRecord
   belongs_to :game
 
   validates :name, presence: true
-  validate :name_uniqueness_check
+  validate :name_uniqueness_check, if: :name_changed?
 
   private
 
