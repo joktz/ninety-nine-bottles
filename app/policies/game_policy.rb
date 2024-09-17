@@ -47,4 +47,8 @@ class GamePolicy < ApplicationPolicy
   def ongoing?
     return record.user_id == user.id
   end
+
+  def find_round_range
+    return record.user_id == user.id
+  end
 end

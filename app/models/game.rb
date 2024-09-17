@@ -27,4 +27,9 @@ class Game < ApplicationRecord
   has_many :rounds, dependent: :destroy
   enum status: { pending: 0, ongoing: 1, finished: 2 }
   validates :title, presence: true
+
+  def find_round_range
+    # Determines number of rounds to display in the dropdown, from 1 to half the number of beers
+    (1..(self.beers.count / 2)).to_a
+  end
 end

@@ -5,6 +5,7 @@
   </div>
   <button data-action="click->toggler#toggle" data-target="playerForm"> Add a player </button>
   <button data-action="click->toggler#toggle" data-target="beerForm"> Add a beer </button>
+  <button data-action="click->toggler#toggle" data-target="roundForm"> Select Rounds </button>
   <% if @players.count >= 2 %>
     <%= button_to "Start game", start_game_path(@game), method: :patch, class: "btn btn-primary" %>
   <% end %>
@@ -13,6 +14,9 @@
   </div>
   <div data-toggler-target="beerForm" class="d-none">
     <%= render 'new_beer', beer: @beer %>
+  </div>
+  <div data-toggler-target="roundForm" class="d-none">
+    <%= render "rounds", game: @game %>
   </div>
   <div class="container">
     <% @players.each do |player| %>

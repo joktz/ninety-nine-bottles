@@ -97,6 +97,8 @@ class GamesController < ApplicationController
   end
 
   def game_params
-    params.require(:game).permit(:title, :rounds)
+    params.require(:game).permit(:title, :round_count).tap do |game_params|
+      game_params[:round_count] = game_params[:round_count].to_i unless game_params[:round_count].nil?
+    end
   end
 end

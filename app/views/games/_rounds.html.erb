@@ -1,0 +1,10 @@
+<div class="container">
+  <h4> Select the number of rounds you'd like the game to have!</h4>
+  <h4> The games will be split evenly across the number of rounds. </h4>
+  <%# Sets round options here to prevent a looping load %>
+  <% round_options = @game.find_round_range %>
+  <%= simple_form_for @game, html: { multipart: true, novalidate: false } do |f| %>
+    <%= f.input :round_count, collection: round_options, as: :select %>
+    <%= f.submit "Select Rounds" %>
+  <% end %>
+</div>
