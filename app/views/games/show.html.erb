@@ -5,7 +5,10 @@
   </div>
   <button data-action="click->toggler#toggle" data-target="playerForm"> Add a player </button>
   <button data-action="click->toggler#toggle" data-target="beerForm"> Add a beer </button>
-  <button data-action="click->toggler#toggle" data-target="roundForm"> Select Rounds </button>
+  <%# Hides Round selector if there aren't enough beers to start a game %>
+  <% if @game.beers.count >= 2 %>
+    <button data-action="click->toggler#toggle" data-target="roundForm"> Select Rounds </button>
+  <% end %>
   <% if @players.count >= 2 %>
     <%= button_to "Start game", start_game_path(@game),
       method: :patch, data: { turbo_confirm: "Are you ready to start?" },
@@ -17,9 +20,9 @@
   <div data-toggler-target="beerForm" class="d-none">
     <%= render 'new_beer', beer: @beer %>
   </div>
-  <div data-toggler-target="roundForm" class="d-none">
-    <%= render "rounds", game: @game %>
-  </div>
+    <div data-toggler-target="roundForm" class="d-none">
+      <%= render "rounds", game: @game %>
+    </div>
   <div class="container">
     <% @players.each do |player| %>
       <div class="player-card"  >
