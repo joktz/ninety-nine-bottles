@@ -25,7 +25,6 @@ class Game < ApplicationRecord
   has_many :beers, dependent: :destroy
   has_many :players, dependent: :destroy
   has_many :rounds, dependent: :destroy
-  enum status: { pending: 0, ongoing: 1, finished: 2 }
   validates :title, presence: true
 
   def find_round_range
