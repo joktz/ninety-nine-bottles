@@ -9,7 +9,7 @@
   <% if @game.beers.count >= 2 %>
     <button data-action="click->toggler#toggle" data-target="roundForm"> Select Rounds </button>
   <% end %>
-  <% if @players.count >= 2 %>
+  <% if @players.count >= 2 && @game.round_count > 0 %>
     <%= button_to "Start game", start_game_path(@game),
       method: :patch, data: { turbo_confirm: "Are you ready to start?" },
       class: "btn btn-primary" %>
