@@ -7,7 +7,7 @@
   <% round_options = @game.find_round_range %>
   <%= simple_form_for @game, html: { multipart: true, novalidate: false } do |f| %>
     <%= f.input :round_count, collection: round_options, as: :select %>
-    <p id="round-message-wrapper"> This game will have <span id="round-message"></span> beers per round </p>
+    <p id="round-message"></p>
     <%= f.submit "Set Rounds" %>
   <% end %>
 </div>
