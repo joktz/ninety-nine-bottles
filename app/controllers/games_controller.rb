@@ -64,25 +64,21 @@ class GamesController < ApplicationController
   end
 
   def start
-    if @game.players.count > 1 && @game.beers.count > 1 && @game.may_start?
+    if @game.may_start?
       @game.start!
-      # Sets each player's score to 0
-      @game.players.each do |player|
-        player.update(score: 0)
-      end
       redirect_to ongoing_game_path(@game), notice: "Game started"
     else
-      redirect_to game_path(@game), alert: "You need at least 2 players and 2 beers to start the game!"
+      redirect_to game_path(@game), alert: "Game could not be started"
     end
   end
 
   def cancel
-    if @game.ongoing?
+    if @game.may_cancel?
       @game.cancel!
-      @game.players.each do |player|
-        player.update(score: nil)
-      end
       redirect_to game_path(@game), notice: "Game cancelled"
+    else
+      # This works for now, but probably would be better to prevent a page reload
+      redirect_to ongoing_game_path(@game), alert: "Game could not be cancelled"
     end
   end
 
