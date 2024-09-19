@@ -9,7 +9,7 @@ class Game < ApplicationRecord
 
     # Define the events that can change the state of the game
     event :start do
-      transitions from: :pending, to: :ongoing, after: %i[reset_player_scores build_rounds]
+      transitions from: :pending, to: :ongoing, after: :play_game
     end
 
     event :finish do
@@ -21,6 +21,8 @@ class Game < ApplicationRecord
     end
   end
 
+  # Associations & Validations
+
   belongs_to :user
   has_many :beers, dependent: :destroy
   has_many :players, dependent: :destroy
@@ -29,23 +31,48 @@ class Game < ApplicationRecord
 
   # Model methods
 
-  # Determines number of rounds to display in the dropdown, from 1 to half the number of beers
+  # Determines number of rounds to display in setup round dropdown, from 1 to half the number of beers
   def find_round_range
     (1..(self.beers.count / 2)).to_a
   end
 
+  # Method to control game flow logic
+  def play_game
+    reset_player_scores
+    # Store game's beers in array to track which ones have been used
+    remaining_beers = self.beers
+    build_rounds(self.beers.count)
+  end
+
+  # resets scores at start or cancellation of game.
   def reset_player_scores
     self.players.each do |player|
       player.update(score: 0)
     end
   end
 
-  def build_rounds
-    self.round_count.times do |round|
-      Round.create(game: self, round_number: round + 1)
+  # builds rounds based on round_count, sets numbers of beers per round
+  def build_rounds(total_beers)
+    rounds = self.round_count
+    beers_per_round = total_beers.to_f / rounds
+    if beers_per_round == beers_per_round.to_i
+      rounds.times { |round| Round.create(game: self, round_number: round + 1, number_of_beers: beers_per_round.to_i) }
+    else
+      # Sets numbers of beers per round if number of beers is uneven
+      remainder = total_beers - (beers_per_round.floor * (rounds - 1))
+      (rounds - 1).times do |round|
+        Round.create(game: self, round_number: round + 1, number_of_beers: beers_per_round.floor)
+      end
+      Round.create(game: self, round_number: rounds, number_of_beers: remainder)
     end
   end
 
+  def play_next_round(remaining_beers)
+    return if remaining_beers.empty?
+
+  end
+
+  # destroys all rounds on cancellation
   def destroy_rounds
     self.rounds.destroy_all
   end

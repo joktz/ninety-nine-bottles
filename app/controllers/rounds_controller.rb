@@ -7,6 +7,6 @@ class RoundsController < ApplicationController
   private
 
   def round_params
-    params.require(:round).permit(:game_id, :round_number)
+    params.require(:round).permit(:game_id, :round_number, :number_of_beers)
   end
 end
