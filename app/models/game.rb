@@ -40,7 +40,9 @@ class Game < ApplicationRecord
   def play_game
     reset_player_scores
     # Store game's beers in array to track which ones have been used
-    remaining_beers = self.beers.to_a
+    remaining_beers = self.beers.shuffle.to_a
+    # Assigns a code to each beer for player selection when guessing
+    remaining_beers.each_with_index { |beer, index| beer.update(code: index + 1) }
     build_rounds(remaining_beers.count)
     play_next_round(remaining_beers)
   end
@@ -89,7 +91,7 @@ class Game < ApplicationRecord
   def destroy_rounds
     self.rounds.each do |round|
       round.beers.each do |beer|
-        beer.update(round_id: nil)
+        beer.update(round_id: nil, code: nil)
       end
       round.destroy
     end

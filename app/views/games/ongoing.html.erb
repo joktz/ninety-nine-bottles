@@ -12,7 +12,7 @@
     class: "btn btn-danger" %>
   <% @round_beers.each do |beer| %>
     <div class="card">
-      <%= beer.name %>
+      <p><%= beer.name %> -- <%= beer.code %> </p>
     </div>
   <% end %>
 </div>
