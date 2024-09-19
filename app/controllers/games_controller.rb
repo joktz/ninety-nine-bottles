@@ -83,6 +83,8 @@ class GamesController < ApplicationController
   end
 
   def ongoing
+    @current_round = @game.rounds.find_by(aasm_state: "ongoing")
+    @round_beers = @current_round.beers if @current_round
   end
 
   private

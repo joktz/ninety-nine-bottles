@@ -26,7 +26,6 @@ function calculateBeersPerRound(round_input, beer_count, round_message) {
     // calculates beers per round, converts to string for display, and prints in the DOM
     round_message.classList.remove('d-none');
     const calculatedValue = (beer_count / round_input.value);
-    console.log(calculatedValue);
 
     if (isFloat(calculatedValue)) {
       const round_beer_count = Math.floor(calculatedValue);

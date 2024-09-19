@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_19_013458) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_19_124354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -56,7 +56,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_19_013458) do
     t.datetime "updated_at", null: false
     t.bigint "game_id", null: false
     t.integer "code"
+    t.bigint "round_id"
     t.index ["game_id"], name: "index_beers_on_game_id"
+    t.index ["round_id"], name: "index_beers_on_round_id"
   end
 
   create_table "games", force: :cascade do |t|
@@ -106,6 +108,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_19_013458) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "beers", "games"
+  add_foreign_key "beers", "rounds"
   add_foreign_key "games", "users"
   add_foreign_key "players", "games"
   add_foreign_key "rounds", "games"

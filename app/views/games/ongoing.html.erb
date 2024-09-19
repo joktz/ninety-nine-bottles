@@ -1,5 +1,6 @@
 <div class="container">
-  <h1> Game started! </h1>
+  <h1> <%= @game.title %> started! </h1>
+  <h2> Round <%= @current_round.round_number %> </h2>
   <% @game.players.each do |player| %>
     <div class="player-card">
       <%= player.name %>
@@ -9,11 +10,9 @@
   <%= button_to "Cancel game", cancel_game_path(@game), method: :patch,
     data: { turbo_confirm: "Are you sure you want to cancel this game? Scores will be reset." },
     class: "btn btn-danger" %>
-  <div class="card">
-    <% @game.rounds.each do |round| %>
-      <%= round.round_number %>
-      <%= round.aasm_state %>
-      <%= round.number_of_beers %>
-    <% end %>
-  </div>
+  <% @round_beers.each do |beer| %>
+    <div class="card">
+      <%= beer.name %>
+    </div>
+  <% end %>
 </div>

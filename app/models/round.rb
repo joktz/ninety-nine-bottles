@@ -16,4 +16,5 @@ class Round < ApplicationRecord
 
   end
   belongs_to :game
+  has_many :beers
 end

@@ -40,8 +40,9 @@ class Game < ApplicationRecord
   def play_game
     reset_player_scores
     # Store game's beers in array to track which ones have been used
-    remaining_beers = self.beers
-    build_rounds(self.beers.count)
+    remaining_beers = self.beers.to_a
+    build_rounds(remaining_beers.count)
+    play_next_round(remaining_beers)
   end
 
   # resets scores at start or cancellation of game.
@@ -69,11 +70,28 @@ class Game < ApplicationRecord
 
   def play_next_round(remaining_beers)
     return if remaining_beers.empty?
+    # Finds the first round that is pending
+    round = self.rounds.find_by(aasm_state: 'pending')
+    return unless round
 
+    selected_beers = []
+    # Selects the beers for the round
+    round.number_of_beers.times do |i|
+      beer = remaining_beers.sample
+      beer.update(round_id: round.id)
+      selected_beers << beer
+      remaining_beers.delete(beer)
+    end
+    round.start!
   end
 
   # destroys all rounds on cancellation
   def destroy_rounds
-    self.rounds.destroy_all
+    self.rounds.each do |round|
+      round.beers.each do |beer|
+        beer.update(round_id: nil)
+      end
+      round.destroy
+    end
   end
 end
