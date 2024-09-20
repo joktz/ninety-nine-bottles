@@ -27,7 +27,7 @@ class GamesController < ApplicationController
     @player = Player.new
     @players = @game.players
     @beer = Beer.new
-    @beers = @game.beers
+    @beers = @game.beers.order(:name)
     @markers = @beers.geocoded.map do |beer|
       {
         lat: beer.latitude,

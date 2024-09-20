@@ -1,15 +1,15 @@
 <div class="container">
   <h1> <%= @game.title %> started! </h1>
   <h2> Round <%= @current_round.round_number %> </h2>
+  <% @round_beers.each do |beer| %>
+    <div class="card">
+      <p><%= beer.name %> -- <%= beer.code %> </p>
+    </div>
+  <% end %>
   <% @game.players.each do |player| %>
     <div class="player-card">
       <%= player.name %>
       <%= player.score %>
-    </div>
-  <% end %>
-  <% @round_beers.each do |beer| %>
-    <div class="card">
-      <p><%= beer.name %> -- <%= beer.code %> </p>
     </div>
   <% end %>
   <%= button_to "Cancel game", cancel_game_path(@game), method: :patch,

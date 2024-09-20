@@ -39,12 +39,15 @@ class Game < ApplicationRecord
   # Method to control game flow logic
   def play_game
     reset_player_scores
-    # Store game's beers in array to track which ones have been used
-    remaining_beers = self.beers.shuffle.to_a
+    # Store game's beers in array to track which ones have been used. Takes IDs to avoid extra loading and enable shuffling
+    beers = self.beers.index_by(&:id)
+    remaining_beer_ids = beers.keys.shuffle
     # Assigns a code to each beer for player selection when guessing
-    remaining_beers.each_with_index { |beer, index| beer.update(code: index + 1) }
-    build_rounds(remaining_beers.count)
-    play_next_round(remaining_beers)
+    remaining_beer_ids.each_with_index { |beer_id, index| beers[beer_id].update(code: index + 1) }
+    build_rounds(remaining_beer_ids.count)
+    unless remaining_beer_ids.empty?
+      play_next_round(remaining_beer_ids)
+    end
   end
 
   # resets scores at start or cancellation of game.
@@ -70,30 +73,27 @@ class Game < ApplicationRecord
     end
   end
 
-  def play_next_round(remaining_beers)
-    return if remaining_beers.empty?
+  def play_next_round(remaining_beer_ids)
     # Finds the first round that is pending
     round = self.rounds.find_by(aasm_state: 'pending')
     return unless round
 
+    beers = Beer.where(id: remaining_beer_ids).index_by(&:id)
     selected_beers = []
     # Selects the beers for the round
-    round.number_of_beers.times do |i|
-      beer = remaining_beers.sample
+    round.number_of_beers.times do
+      beer_id = remaining_beer_ids.sample
+      beer = beers[beer_id]
       beer.update(round_id: round.id)
       selected_beers << beer
-      remaining_beers.delete(beer)
+      remaining_beer_ids.delete(beer_id)
     end
     round.start!
   end
 
   # destroys all rounds on cancellation
   def destroy_rounds
-    self.rounds.each do |round|
-      round.beers.each do |beer|
-        beer.update(round_id: nil, code: nil)
-      end
-      round.destroy
-    end
+    self.beers.update_all(code: nil, round_id: nil)
+    self.rounds.destroy_all
   end
 end
