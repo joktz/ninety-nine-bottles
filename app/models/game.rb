@@ -88,6 +88,10 @@ class Game < ApplicationRecord
       selected_beers << beer
       remaining_beer_ids.delete(beer_id)
     end
+    # Initializes player answers for the round
+    self.players.each do |player|
+      PlayerAnswer.create(player: player, round: round, beer: selected_beers.first)
+    end
     round.start!
   end
 

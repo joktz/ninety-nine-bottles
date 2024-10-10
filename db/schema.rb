@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_19_124354) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_20_093522) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -71,6 +71,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_19_124354) do
     t.index ["user_id"], name: "index_games_on_user_id"
   end
 
+  create_table "player_answers", force: :cascade do |t|
+    t.bigint "player_id", null: false
+    t.integer "answer"
+    t.bigint "round_id", null: false
+    t.bigint "beer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["beer_id"], name: "index_player_answers_on_beer_id"
+    t.index ["player_id"], name: "index_player_answers_on_player_id"
+    t.index ["round_id"], name: "index_player_answers_on_round_id"
+  end
+
   create_table "players", force: :cascade do |t|
     t.string "name"
     t.integer "score"
@@ -110,6 +122,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_19_124354) do
   add_foreign_key "beers", "games"
   add_foreign_key "beers", "rounds"
   add_foreign_key "games", "users"
+  add_foreign_key "player_answers", "beers"
+  add_foreign_key "player_answers", "players"
+  add_foreign_key "player_answers", "rounds"
   add_foreign_key "players", "games"
   add_foreign_key "rounds", "games"
 end

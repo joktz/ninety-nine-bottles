@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" data-controller="toggler">
   <h1> <%= @game.title %> started! </h1>
   <h2> Round <%= @current_round.round_number %> </h2>
   <% @round_beers.each do |beer| %>
@@ -6,12 +6,17 @@
       <p><%= beer.name %> -- <%= beer.code %> </p>
     </div>
   <% end %>
-  <% @game.players.each do |player| %>
-    <div class="player-card">
-      <%= player.name %>
-      <%= player.score %>
-    </div>
-  <% end %>
+  <div class="player-cards-container">
+    <% @game.players.each do |player| %>
+      <div class="player-card" data-action="click->toggler#toggle" data-target="answerForm" data-player-id="<%= player.id %>">
+        <%= player.name %>
+        <%= player.score %>
+      </div>
+      <div data-toggler-target="answerForm" class="d-none" data-player-id="<%= player.id %>">
+        <%= render partial: "answers", locals: { player: player }%>
+      </div>
+    <% end %>
+  </div>
   <%= button_to "Cancel game", cancel_game_path(@game), method: :patch,
     data: { turbo_confirm: "Are you sure you want to cancel this game? Scores will be reset." },
     class: "btn btn-danger" %>
