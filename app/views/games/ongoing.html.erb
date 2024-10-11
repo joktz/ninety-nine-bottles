@@ -1,7 +1,9 @@
 <div class="container" data-controller="toggler">
+  <%= @round_beers %>
   <h1> <%= @game.title %> started! </h1>
   <h2> Round <%= @current_round.round_number %> </h2>
-  <% @round_beers.each do |beer| %>
+  <%# Organizes Beers by code to prevent easy answering %>
+  <% @round_beers.order(:code).each do |beer| %>
     <div class="card">
       <p><%= beer.name %> -- <%= beer.code %> </p>
     </div>
@@ -13,7 +15,8 @@
         <%= player.score %>
       </div>
       <div data-toggler-target="answerForm" class="d-none" data-player-id="<%= player.id %>">
-        <%= render partial: "answers", locals: { player: player, player_answer: PlayerAnswer.find_by(player: player, round: @current_round) }%>
+        <%# Rendering partial and taking all player answers matching the round and player selected %>
+        <%= render partial: "answers", locals: { player: player, player_answer: PlayerAnswer.where(player: player, round: @current_round) }%>
       </div>
     <% end %>
   </div>

@@ -90,7 +90,9 @@ class Game < ApplicationRecord
     end
     # Initializes player answers for the round
     self.players.each do |player|
-      PlayerAnswer.create(player: player, round: round, beer: selected_beers.first)
+      selected_beers.each do |beer|
+        PlayerAnswer.create(player: player, beer: beer, round: round)
+      end
     end
     round.start!
   end
