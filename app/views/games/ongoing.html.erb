@@ -13,7 +13,7 @@
         <%= player.score %>
       </div>
       <div data-toggler-target="answerForm" class="d-none" data-player-id="<%= player.id %>">
-        <%= render partial: "answers", locals: { player: player }%>
+        <%= render partial: "answers", locals: { player: player, player_answer: PlayerAnswer.find_by(player: player, round: @current_round) }%>
       </div>
     <% end %>
   </div>

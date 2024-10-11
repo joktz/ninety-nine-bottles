@@ -1,10 +1,7 @@
-<%= @game %>
-<%= player %>
-<%= @current_round %>
 
-<% if @player_answer %>
+<% if player_answer %>
   Type your answer here!
-  <%= simple_form_for [game, player, player_answer], html: { multipart: true } do |f| %>
+  <%= simple_form_for [@game, player, player_answer], html: { multipart: true } do |f| %>
     <%= f.input :answer %>
   <% end %>
 <% end %>
