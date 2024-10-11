@@ -1,6 +1,7 @@
 class Beer < ApplicationRecord
   belongs_to :game
   belongs_to :round, optional: true
+  has_many :player_answers, dependent: :destroy
   has_one_attached :photo
   geocoded_by :origin
   after_validation :geocode, if: :should_geocode?

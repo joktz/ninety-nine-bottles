@@ -17,4 +17,5 @@ class Round < ApplicationRecord
   end
   belongs_to :game
   has_many :beers
+  has_many :player_answers, dependent: :destroy
 end
