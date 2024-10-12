@@ -1,11 +1,22 @@
 <%# Conditional guard against null to prevent errors. Can remove once all the kinks worked out %>
-<% if player_answer %>
-  <%# shuffling array ofIterating across all player_answers  %>
-  <% player_answer.each do |answer| %>
-    <%= simple_form_for [@game, player, answer], html: { multipart: true } do |f| %>
-      <%= f.input :answer, collection: @round_beers , label_method: :code, value_method: :code, label: answer.beer.name %>
+<div data-controller="answer-checker">
+  <% if player_answer %>
+    <%= simple_form_for [@game, player], url: game_player_player_answers_path(@game, player), html: { multipart: true } do |f| %>
+      <% player_answer.each do |answer| %>
+        <div>
+          <%= f.fields_for :player_answers, answer do |af| %>
+            <%= af.input :answer, collection: @round_beers,
+                          label_method: :code,
+                          value_method: :code,
+                          label: answer.beer.name,
+                          input_html: { data: { action: "change->answer-checker#answerChanged",
+                          answer_checker_target: "answer"} } %>
+          <% end %>
+        </div>
+      <% end %>
+    <%= f.submit "Submit", id: "submit-button", data: { answer_checker_target: "submit"}, disabled: true %>
     <% end %>
+  <% else %>
+    <p> Answering not possible! The data is incomplete. </p>
   <% end %>
-<% else %>
-  <p> Answering not possible! The data is incomplete. </p>
-<% end %>
+</div>

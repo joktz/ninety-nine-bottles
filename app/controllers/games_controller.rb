@@ -72,6 +72,15 @@ class GamesController < ApplicationController
     end
   end
 
+  def end_round
+    if @round.may_finish?
+      @round.finish!
+      redirect_to ongoing_game_path(@game), notice: "Round ended"
+    else
+      redirect_to ongoing_game_path(@game), alert: "Round could not be ended"
+    end
+  end
+
   def cancel
     if @game.may_cancel?
       @game.cancel!
@@ -84,7 +93,7 @@ class GamesController < ApplicationController
 
   def ongoing
     @current_round = @game.rounds.find_by(aasm_state: "ongoing")
-    @round_beers = @current_round.beers if @current_round
+    @round_beers = @current_round.beers.order(:code) if @current_round
   end
 
   private

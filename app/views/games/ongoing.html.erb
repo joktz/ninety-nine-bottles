@@ -1,9 +1,8 @@
 <div class="container" data-controller="toggler">
-  <%= @round_beers %>
   <h1> <%= @game.title %> started! </h1>
   <h2> Round <%= @current_round.round_number %> </h2>
   <%# Organizes Beers by code to prevent easy answering %>
-  <% @round_beers.order(:code).each do |beer| %>
+  <% @round_beers.each do |beer| %>
     <div class="card">
       <p><%= beer.name %> -- <%= beer.code %> </p>
     </div>
