@@ -27,8 +27,13 @@ class PlayersController < ApplicationController
     # Conditional to allow for AJAX requests
     if @player.update(player_params)
       respond_to do |format|
-        format.html { redirect_to game_path(@player.game) }
-        format.json { render json: { status: "Success", player: @player }, status: :ok }
+        # Checks if the request is coming from the ongoing game page
+        if params[:source] == 'ongoing'
+          format.html { redirect_to ongoing_game_path(@player.game) }
+        else
+          format.html { redirect_to game_path(@player.game) }
+          format.json { render json: { status: "Success", player: @player }, status: :ok }
+        end
       end
     else
       respond_to do |format|
@@ -51,6 +56,6 @@ class PlayersController < ApplicationController
   end
 
   def player_params
-    params.require(:player).permit(:name, :score)
+    params.require(:player).permit(:name, :score, player_answers_attributes: %i[id answer])
   end
 end

@@ -18,12 +18,15 @@ class PlayerAnswersController < ApplicationController
   end
 
   def update
+    if @player.update(player_answer_params)
+      redirect_to ongoing_game_path(@player.round.game)
+    end
   end
 
   private
 
   def player_answer_params
-    params.require(:player_answer).permit(:answer)
+    params.require(:player_answer).permit(player_answers_attributes: [:id, :answer])
   end
 
   def set_answer

@@ -1,10 +1,14 @@
 <%# Conditional guard against null to prevent errors. Can remove once all the kinks worked out %>
 <div data-controller="answer-checker">
-  <% if player_answer %>
-    <%= simple_form_for [@game, player], url: game_player_player_answers_path(@game, player), html: { multipart: true } do |f| %>
+  <% if player_answer.any? %>
+    <%= simple_form_for [@game, player], url: game_player_path(@game, player), method: :patch, html: { multipart: true } do |f| %>
+      <%# Hidden field for save redirect anchoring %>
+      <%= hidden_field_tag :source, "ongoing" %>
+
       <% player_answer.each do |answer| %>
         <div>
           <%= f.fields_for :player_answers, answer do |af| %>
+            <%= af.hidden_field :id %>
             <%= af.input :answer, collection: @round_beers,
                           label_method: :code,
                           value_method: :code,
