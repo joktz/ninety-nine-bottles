@@ -13,5 +13,15 @@ Rails.application.routes.draw do
   # Need to next routes within games for use pages in game show
   resources :games do
     resources :players, :beers
+    resources :players do
+      resources :player_answers
+    end
+    member do
+      patch :start
+      patch :cancel
+      patch :end_round
+      get :ongoing
+      get :finished
+    end
   end
 end

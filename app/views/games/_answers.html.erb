@@ -1,0 +1,27 @@
+<%# Conditional guard against null to prevent errors. Can remove once all the kinks worked out %>
+<div data-controller="answer-checker">
+  <% if player_answer.any? %>
+    <%= simple_form_for [@game, player], url: game_player_path(@game, player), method: :patch, html: { multipart: true } do |f| %>
+      <%# Hidden field for save redirect anchoring %>
+      <%= hidden_field_tag :source, "ongoing" %>
+
+<%# PROBLEM HERE, FOR SOME REASON TAKING ALL THE BEERS IN THE GAME?!!! %>
+      <% player_answer.each do |answer| %>
+        <div>
+          <%= f.fields_for :player_answers, answer do |af| %>
+            <%= af.hidden_field :id %>
+            <%= af.input :answer, collection: @round_beers,
+                          label_method: :code,
+                          value_method: :code,
+                          label: answer.beer.name,
+                          input_html: { data: { action: "change->answer-checker#answerChanged",
+                          answer_checker_target: "answer"} } %>
+          <% end %>
+        </div>
+      <% end %>
+    <%= f.submit "Submit", id: "submit-button", data: { answer_checker_target: "submit"}, disabled: true %>
+    <% end %>
+  <% else %>
+    <p> Answering not possible! The data is incomplete. </p>
+  <% end %>
+</div>

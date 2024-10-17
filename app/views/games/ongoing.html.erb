@@ -1,0 +1,28 @@
+<div class="container" data-controller="toggler">
+  <h1> <%= @game.title %> started! </h1>
+  <h2> Round <%= @current_round.round_number %> </h2>
+  <%# Organizes Beers by code to prevent easy answering %>
+  <% @round_beers.each do |beer| %>
+    <div class="card">
+      <p><%= beer.name %> -- <%= beer.code %> </p>
+    </div>
+  <% end %>
+  <div class="player-cards-container">
+    <% @game.players.each do |player| %>
+      <div class="player-card" data-action="click->toggler#toggle" data-target="answerForm" data-player-id="<%= player.id %>">
+        <%= player.name %>
+        <%= player.score %>
+      </div>
+      <div data-toggler-target="answerForm" class="d-none" data-player-id="<%= player.id %>">
+        <%# Rendering partial and taking all player answers matching the round and player selected %>
+        <%= render partial: "answers", locals: { player: player, player_answer: PlayerAnswer.where(player: player, round: @current_round) }%>
+      </div>
+    <% end %>
+  </div>
+  <%= button_to "End Round", end_round_game_path(@game), method: :patch,
+    data: { turbo_confirm: "Are these everyone's final answers?" },
+    class: "btn btn-primary" %>
+  <%= button_to "Cancel game", cancel_game_path(@game), method: :patch,
+    data: { turbo_confirm: "Are you sure you want to cancel this game? Scores will be reset." },
+    class: "btn btn-danger" %>
+</div>

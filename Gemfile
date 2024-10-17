@@ -81,3 +81,7 @@ gem "devise"
 gem "pundit"
 gem "cloudinary"
 gem "geocoder"
+
+# State management machine
+gem "aasm"
+gem 'after_commit_everywhere', '~> 1.0'

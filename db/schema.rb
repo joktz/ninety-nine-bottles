@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_29_072257) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_20_093522) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -55,19 +55,32 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_29_072257) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "game_id", null: false
+    t.integer "code"
+    t.bigint "round_id"
     t.index ["game_id"], name: "index_beers_on_game_id"
+    t.index ["round_id"], name: "index_beers_on_round_id"
   end
 
   create_table "games", force: :cascade do |t|
     t.string "title"
-    t.integer "rounds"
     t.bigint "user_id", null: false
-    t.integer "sessions"
-    t.string "round_mode"
-    t.string "inf_mode"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "aasm_state"
+    t.integer "round_count"
     t.index ["user_id"], name: "index_games_on_user_id"
+  end
+
+  create_table "player_answers", force: :cascade do |t|
+    t.bigint "player_id", null: false
+    t.integer "answer"
+    t.bigint "round_id", null: false
+    t.bigint "beer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["beer_id"], name: "index_player_answers_on_beer_id"
+    t.index ["player_id"], name: "index_player_answers_on_player_id"
+    t.index ["round_id"], name: "index_player_answers_on_round_id"
   end
 
   create_table "players", force: :cascade do |t|
@@ -77,6 +90,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_29_072257) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["game_id"], name: "index_players_on_game_id"
+  end
+
+  create_table "rounds", force: :cascade do |t|
+    t.bigint "game_id", null: false
+    t.integer "round_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "aasm_state"
+    t.integer "number_of_beers"
+    t.index ["game_id"], name: "index_rounds_on_game_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -97,6 +120,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_29_072257) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "beers", "games"
+  add_foreign_key "beers", "rounds"
   add_foreign_key "games", "users"
+  add_foreign_key "player_answers", "beers"
+  add_foreign_key "player_answers", "players"
+  add_foreign_key "player_answers", "rounds"
   add_foreign_key "players", "games"
+  add_foreign_key "rounds", "games"
 end

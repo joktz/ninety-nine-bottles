@@ -35,4 +35,28 @@ class GamePolicy < ApplicationPolicy
   def destroy?
     return record.user_id == user.id
   end
+
+  def start?
+    return record.user_id == user.id
+  end
+
+  def cancel?
+    return record.user_id == user.id
+  end
+
+  def ongoing?
+    return record.user_id == user.id
+  end
+
+  def end_round?
+    return record.user_id == user.id
+  end
+
+  def finished?
+    return record.user_id == user.id
+  end
+
+  def find_round_range
+    return record.user_id == user.id
+  end
 end

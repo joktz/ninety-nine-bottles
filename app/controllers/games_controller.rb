@@ -1,5 +1,6 @@
 class GamesController < ApplicationController
-  before_action :set_game, only: [:show, :edit, :update, :destroy]
+  before_action :set_game, only: [:show, :edit, :update, :destroy, :start, :cancel, :ongoing, :end_round, :finished]
+  before_action :set_round, only: [:ongoing, :end_round]
 
   def index
     @games = policy_scope(Game).all
@@ -7,6 +8,7 @@ class GamesController < ApplicationController
 
   def new
     @game = Game.new
+    @game.user = current_user
     authorize @game
   end
 
@@ -15,6 +17,7 @@ class GamesController < ApplicationController
     @game.user = current_user
     authorize @game
     if @game.save
+      Player.create(game: @game, name: current_user.first_name)
       redirect_to game_path(@game)
     else
       render :new, status: :unprocessable_entity
@@ -25,7 +28,7 @@ class GamesController < ApplicationController
     @player = Player.new
     @players = @game.players
     @beer = Beer.new
-    @beers = @game.beers
+    @beers = @game.beers.order(:name)
     @markers = @beers.geocoded.map do |beer|
       {
         lat: beer.latitude,
@@ -61,6 +64,47 @@ class GamesController < ApplicationController
     redirect_to games_path, notice: "Game deleted"
   end
 
+  def start
+    if @game.may_start?
+      @game.start!
+      redirect_to ongoing_game_path(@game), notice: "Game started"
+    else
+      redirect_to game_path(@game), alert: "Game could not be started"
+    end
+  end
+
+  def cancel
+    if @game.may_cancel?
+      @game.cancel!
+      redirect_to game_path(@game), notice: "Game cancelled"
+    else
+      # This works for now, but probably would be better to prevent a page reload
+      redirect_to ongoing_game_path(@game), alert: "Game could not be cancelled"
+    end
+  end
+
+  def ongoing
+    @round_beers = @current_round.beers.order(:code) if @current_round
+  end
+
+  def end_round
+    if @current_round.may_finish?
+      @current_round.finish!
+      @game.play_next_round
+
+      if @game.finished?
+        redirect_to finished_game_path(@game), notice: "Game finished"
+      else
+        redirect_to ongoing_game_path(@game), notice: "Round ended"
+      end
+    else
+      redirect_to ongoing_game_path(@game), alert: "Round could not be ended"
+    end
+  end
+
+  def finished
+  end
+
   private
 
   def set_game
@@ -68,7 +112,13 @@ class GamesController < ApplicationController
     authorize @game
   end
 
+  def set_round
+    @current_round = @game.rounds.find_by(aasm_state: "ongoing")
+  end
+
   def game_params
-    params.require(:game).permit(:title)
+    params.require(:game).permit(:title, :round_count).tap do |game_params|
+      game_params[:round_count] = game_params[:round_count].to_i unless game_params[:round_count].nil?
+    end
   end
 end

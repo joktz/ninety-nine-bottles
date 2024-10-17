@@ -1,18 +1,36 @@
 <div class="game-page" data-controller="toggler click-edit">
-  <div data-action="click->click-edit#click" data-model="game" data-field="title">
-    <h1  data-click-edit-target="gameTitle" data-url="<%= game_path(@game) %>"> <%= @game.title %> </h1>
-    <input type="text" data-click-edit-target="gameNewTitle" value="<% @game.title %>" class="d-none">
+  <div id="game-details-buttons">
+    <% if @game.pending?%>
+      <div data-action="click->click-edit#click" data-model="game" data-field="title">
+        <h1  data-click-edit-target="gameTitle" data-url="<%= game_path(@game) %>"> <%= @game.title %> </h1>
+        <input type="text" data-click-edit-target="gameNewTitle" value="<% @game.title %>" class="d-none">
+      </div>
+      <button data-action="click->toggler#toggle" data-target="playerForm"> Add a player </button>
+      <button data-action="click->toggler#toggle" data-target="beerForm"> Add a beer </button>
+      <%# Hides Round selector if there aren't enough beers to start a game %>
+      <% if @game.beers.count >= 2 %>
+        <button data-action="click->toggler#toggle" data-target="roundForm"> Select Rounds </button>
+      <% end %>
+    <% end %>
   </div>
-  <button data-action="click->toggler#toggle" data-target="playerForm"> Add a player </button>
-  <button data-action="click->toggler#toggle" data-target="beerForm"> Add a beer </button>
-  <button> Choose difficulty </button>
-  <button> Start game </button>
+  <% if @game.ongoing?%>
+    <%= button_to "Resume game", ongoing_game_path(@game), method: :get, class: "btn btn-primary" %>
+  <% elsif @players.count >= 2 && @game.round_count > 0 && @game.pending? %>
+    <%= button_to "Start game", start_game_path(@game),
+      method: :patch, data: { turbo_confirm: "Are you ready to start?" },
+      class: "btn btn-primary" %>
+  <% else %>
+    <p> Add beers, players, & choose your round setting! </p>
+  <% end %>
   <div data-toggler-target="playerForm" class="d-none">
     <%= render 'new_player', player: @player %>
   </div>
   <div data-toggler-target="beerForm" class="d-none">
     <%= render 'new_beer', beer: @beer %>
   </div>
+    <div data-toggler-target="roundForm" class="d-none">
+      <%= render "rounds", game: @game %>
+    </div>
   <div class="container">
     <% @players.each do |player| %>
       <div class="player-card"  >
@@ -20,7 +38,9 @@
           <span data-click-edit-target="playerName" data-url="<%= player_path(player)%>"> <%= player.name %> </span>
           <input type="text" data-click-edit-target="playerNewName" value="<% player.name %>" class="d-none">
         </div>
-        <%= button_to "X", player_path(player), method: :delete, data: { turbo_confirm: "Are you sure?"}, class: "player-delete" %>
+        <% if @game.pending? %>
+          <%= button_to "X", player_path(player), method: :delete, data: { turbo_confirm: "Are you sure?"}, class: "player-delete" %>
+        <% end %>
       </div>
     <% end %>
   </div>

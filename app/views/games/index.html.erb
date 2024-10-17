@@ -6,4 +6,5 @@
     <%= button_to "Delete", game_path(game), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
   </div>
 <% end %>
+<%= link_to "Add game", new_game_path, class: "btn btn-primary" %>
 </div>
