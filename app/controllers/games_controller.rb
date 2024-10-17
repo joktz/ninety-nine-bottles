@@ -1,5 +1,5 @@
 class GamesController < ApplicationController
-  before_action :set_game, only: [:show, :edit, :update, :destroy, :start, :cancel, :ongoing, :end_round]
+  before_action :set_game, only: [:show, :edit, :update, :destroy, :start, :cancel, :ongoing, :end_round, :finished]
   before_action :set_round, only: [:ongoing, :end_round]
 
   def index
@@ -90,10 +90,19 @@ class GamesController < ApplicationController
   def end_round
     if @current_round.may_finish?
       @current_round.finish!
-      redirect_to ongoing_game_path(@game), notice: "Round ended"
+      @game.play_next_round
+
+      if @game.finished?
+        redirect_to finished_game_path(@game), notice: "Game finished"
+      else
+        redirect_to ongoing_game_path(@game), notice: "Round ended"
+      end
     else
       redirect_to ongoing_game_path(@game), alert: "Round could not be ended"
     end
+  end
+
+  def finished
   end
 
   private

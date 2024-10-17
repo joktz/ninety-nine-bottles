@@ -17,7 +17,7 @@ class Game < ApplicationRecord
     end
 
     event :cancel do
-      transitions from: :ongoing, to: :pending, after: %i[reset_player_scores destroy_rounds]
+      transitions from: [:ongoing, :finished], to: :pending, after: %i[reset_player_scores destroy_rounds]
     end
   end
 

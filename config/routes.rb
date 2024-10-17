@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       patch :cancel
       patch :end_round
       get :ongoing
+      get :finished
     end
   end
 end

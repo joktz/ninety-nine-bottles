@@ -52,6 +52,10 @@ class GamePolicy < ApplicationPolicy
     return record.user_id == user.id
   end
 
+  def finished?
+    return record.user_id == user.id
+  end
+
   def find_round_range
     return record.user_id == user.id
   end

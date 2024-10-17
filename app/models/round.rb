@@ -39,6 +39,5 @@ class Round < ApplicationRecord
         player.save
       end
     end
-    self.game.play_next_round
   end
 end
