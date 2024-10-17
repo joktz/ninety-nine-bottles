@@ -38,27 +38,17 @@ class Game < ApplicationRecord
 
   # Method to control game flow logic
   def play_game
-    reset_player_scores
-    # Store game's beers in array to track which ones have been used. Takes IDs to avoid extra loading and enable shuffling
+    # Store game's beers in array to track which ones have been used. Takes IDs to avoid extra loading
     beers = self.beers.index_by(&:id)
     remaining_beer_ids = beers.keys.shuffle
     # Assigns a code to each beer for player selection when guessing
     remaining_beer_ids.each_with_index { |beer_id, index| beers[beer_id].update(code: index + 1) }
-    build_rounds(remaining_beer_ids.count)
-    unless remaining_beer_ids.empty?
-      play_next_round(remaining_beer_ids)
-    end
+    build_rounds(remaining_beer_ids.count, remaining_beer_ids)
+    play_next_round
   end
 
-  # resets scores at start or cancellation of game.
-  def reset_player_scores
-    self.players.each do |player|
-      player.update(score: 0)
-    end
-  end
-
-  # builds rounds based on round_count, sets numbers of beers per round
-  def build_rounds(total_beers)
+  # builds rounds dynamically and assigns beers
+  def build_rounds(total_beers, remaining_beer_ids)
     rounds = self.round_count
     beers_per_round = total_beers.to_f / rounds
     if beers_per_round == beers_per_round.to_i
@@ -71,35 +61,48 @@ class Game < ApplicationRecord
       end
       Round.create(game: self, round_number: rounds, number_of_beers: remainder)
     end
-  end
-
-  def play_next_round(remaining_beer_ids)
-    # Finds the first round that is pending
-    round = self.rounds.find_by(aasm_state: 'pending')
-    return unless round
-
     beers = Beer.where(id: remaining_beer_ids).index_by(&:id)
     selected_beers = []
-    # Selects the beers for the round
-    round.number_of_beers.times do
-      beer_id = remaining_beer_ids.sample
-      beer = beers[beer_id]
-      beer.update(round_id: round.id)
-      selected_beers << beer
-      remaining_beer_ids.delete(beer_id)
-    end
-    # Initializes player answers for the round
-    self.players.each do |player|
-      selected_beers.each do |beer|
-        PlayerAnswer.create(player: player, beer: beer, round: round)
+    self.rounds.each do |round|
+      # Selects the beers for the round
+      round.number_of_beers.times do
+        beer_id = remaining_beer_ids.sample
+        beer = beers[beer_id]
+        beer.update(round_id: round.id)
+        selected_beers << beer
+        remaining_beer_ids.delete(beer_id)
       end
     end
-    round.start!
+  end
+
+  def play_next_round
+    # Finds the first round that is pending
+    round = self.rounds.find_by(aasm_state: 'pending')
+    if round
+      # Initializes player answers for the round
+      self.players.each do |player|
+        round.beers.each do |beer|
+          PlayerAnswer.create(player: player, beer: beer, round: round)
+        end
+      end
+      round.start!
+    else
+      # ends the game, still need to build this logic
+      # Needs to open a new page to diplay the winner, needs methods
+      self.finish!
+    end
   end
 
   # destroys all rounds on cancellation
   def destroy_rounds
     self.beers.update_all(code: nil, round_id: nil)
     self.rounds.destroy_all
+  end
+
+  # resets scores at start or cancellation of game.
+  def reset_player_scores
+    self.players.each do |player|
+      player.update(score: 0)
+    end
   end
 end

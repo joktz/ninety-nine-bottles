@@ -1,5 +1,6 @@
 class GamesController < ApplicationController
-  before_action :set_game, only: [:show, :edit, :update, :destroy, :start, :cancel, :ongoing]
+  before_action :set_game, only: [:show, :edit, :update, :destroy, :start, :cancel, :ongoing, :end_round]
+  before_action :set_round, only: [:ongoing, :end_round]
 
   def index
     @games = policy_scope(Game).all
@@ -72,15 +73,6 @@ class GamesController < ApplicationController
     end
   end
 
-  def end_round
-    if @round.may_finish?
-      @round.finish!
-      redirect_to ongoing_game_path(@game), notice: "Round ended"
-    else
-      redirect_to ongoing_game_path(@game), alert: "Round could not be ended"
-    end
-  end
-
   def cancel
     if @game.may_cancel?
       @game.cancel!
@@ -92,8 +84,16 @@ class GamesController < ApplicationController
   end
 
   def ongoing
-    @current_round = @game.rounds.find_by(aasm_state: "ongoing")
     @round_beers = @current_round.beers.order(:code) if @current_round
+  end
+
+  def end_round
+    if @current_round.may_finish?
+      @current_round.finish!
+      redirect_to ongoing_game_path(@game), notice: "Round ended"
+    else
+      redirect_to ongoing_game_path(@game), alert: "Round could not be ended"
+    end
   end
 
   private
@@ -101,6 +101,10 @@ class GamesController < ApplicationController
   def set_game
     @game = Game.find(params[:id])
     authorize @game
+  end
+
+  def set_round
+    @current_round = @game.rounds.find_by(aasm_state: "ongoing")
   end
 
   def game_params

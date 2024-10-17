@@ -19,6 +19,9 @@
       </div>
     <% end %>
   </div>
+  <%= button_to "End Round", end_round_game_path(@game), method: :patch,
+    data: { turbo_confirm: "Are these everyone's final answers?" },
+    class: "btn btn-primary" %>
   <%= button_to "Cancel game", cancel_game_path(@game), method: :patch,
     data: { turbo_confirm: "Are you sure you want to cancel this game? Scores will be reset." },
     class: "btn btn-danger" %>

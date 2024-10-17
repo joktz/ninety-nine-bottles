@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     member do
       patch :start
       patch :cancel
+      patch :end_round
       get :ongoing
     end
   end

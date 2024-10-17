@@ -5,6 +5,7 @@
       <%# Hidden field for save redirect anchoring %>
       <%= hidden_field_tag :source, "ongoing" %>
 
+<%# PROBLEM HERE, FOR SOME REASON TAKING ALL THE BEERS IN THE GAME?!!! %>
       <% player_answer.each do |answer| %>
         <div>
           <%= f.fields_for :player_answers, answer do |af| %>
